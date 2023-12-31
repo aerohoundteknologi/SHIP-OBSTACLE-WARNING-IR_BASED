@@ -61,7 +61,22 @@ void loop() {
   webSocket.loop();
 
 
-  sendDataToClients("Hello from ESP32");
+  // forward 
+  for( int i = 0; i < 91; i++){
+    sendDataToClients_CSV(i);
+  }
+  // backward
+  for( int i = 90; i >= 0; i--){
+    sendDataToClients_CSV(i);
+  }
+}
+
+void sendDataToClients_CSV(int angle){
+  int16_t dist = random(0, 600);
+  int16_t depth = random(0, 40);
+  String data = String(angle)+","+String(dist)+","+String(depth);
+  webSocket.broadcastTXT(data);
+  delay(SEND_DELAY);
 }
 
 void sendDataToClients( String data) {
