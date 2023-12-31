@@ -13,11 +13,12 @@
 #define USE_SERIAL Serial
 #endif
 
-#define SEND_DELAY 1000
+#define SEND_DELAY 200
 
 // prototypes function
 void sendDataToClients(String data);
 void sendDataToClients_CSV(int angle);
+void sendDataToClients_CSV_wdlay(String data);
 
 // ssid and password for connection
 const char *w_ssid = "Informatics ITS 20";
@@ -26,9 +27,6 @@ const char *w_password = "informatics";
 
 
 WiFiMulti wifiConn;
-
-
-
 
 
 void setup() {
@@ -75,11 +73,31 @@ void loop() {
   }
 }
 
+void sendDataToClients_CSV_wdlay( String data) {
+  // kita akan berikan layer while untuk delay pada baris ke 2
+  static uint32_t lastMillis = millis();
+  while(1){
+    webSocket.loop();
+    uint32_t currentMillis = millis();
+    // Serial.print(currentMillis);
+    // Serial.print(" - ");
+    // Serial.print(lastMillis);
+    // Serial.print(" = ");
+    // Serial.println(currentMillis - lastMillis);
+    if (currentMillis - lastMillis >= SEND_DELAY) {
+      bool sending = webSocket.broadcastTXT(data);
+      // Serial.println("Update Last Millis");
+      lastMillis = currentMillis;
+      return;
+    }
+  }
+}
+
 void sendDataToClients_CSV(int angle){
   int16_t dist = random(0, 600);
   int16_t depth = random(0, 40);
   String data = String(angle)+","+String(dist)+","+String(depth);
-  webSocket.broadcastTXT(data);
+  sendDataToClients_CSV_wdlay(data);
 }
 
 void sendDataToClients( String data) {
