@@ -17,6 +17,7 @@
 
 // prototypes function
 void sendDataToClients(String data);
+void sendDataToClients_CSV(int angle);
 
 // ssid and password for connection
 const char *w_ssid = "Informatics ITS 20";
