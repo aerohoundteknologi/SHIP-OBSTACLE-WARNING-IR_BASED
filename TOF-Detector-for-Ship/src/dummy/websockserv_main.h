@@ -53,7 +53,9 @@ void setup() {
   // Print ESP32 IP address
   IPAddress ip = WiFi.localIP();
   USE_SERIAL.print("IP Address: ");
-  USE_SERIAL.println(ip);
+  USE_SERIAL.print(ip);
+  USE_SERIAL.print(":");
+  USE_SERIAL.println(WS_serverPort);
 
   websocketSetup();
 }
@@ -62,6 +64,7 @@ void loop() {
   webSocket.loop();
 
 
+  // Yaopo yo carae ngekeki delay? ohh reti
   // forward 
   for( int i = 0; i < 91; i++){
     sendDataToClients_CSV(i);
@@ -77,7 +80,6 @@ void sendDataToClients_CSV(int angle){
   int16_t depth = random(0, 40);
   String data = String(angle)+","+String(dist)+","+String(depth);
   webSocket.broadcastTXT(data);
-  delay(SEND_DELAY);
 }
 
 void sendDataToClients( String data) {
