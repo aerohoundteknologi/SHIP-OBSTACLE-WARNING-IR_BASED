@@ -95,7 +95,7 @@ void sendDataToClients_CSV_wdlay( String data) {
 
 void sendDataToClients_CSV(int angle){
   int16_t dist = random(0, 600);
-  int16_t depth = random(0, 40);
+  int16_t depth = random(0, 2);
   String data = String(angle)+","+String(dist)+","+String(depth);
   sendDataToClients_CSV_wdlay(data);
 }
