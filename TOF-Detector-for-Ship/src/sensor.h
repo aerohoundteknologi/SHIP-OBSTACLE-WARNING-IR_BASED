@@ -6,6 +6,7 @@
 
 struct Sensor{
     float height;
+    float draught;
     float alpha;
     float beta;
 };
@@ -13,6 +14,7 @@ struct Sensor{
 
 Sensor LUNA = {
     0.2001456,
+    0.06,
     86.68,
     48.66,
 };
@@ -28,6 +30,16 @@ void lunaSetup(){
     LUNA_SERIAL.begin(115200); // Initializing serial port
 }
 
+uint16_t depth_status(float depth){
+  if(depth < 0.14){
+    return 2; // BAHAYA
+  }else if(depth < 0.2){
+    return 1; // AWAS
+  }else{
+    return 0; // AMAN
+  }
+}
+
 float deg_to_rad(float deg){
     return deg * M_PI / 180.0;
 }
@@ -36,13 +48,14 @@ float deg_to_rad(float deg){
 void X(float& dist, float& depth, float C){
     // printf("======== COMPUTE ========\n");
     // printf("input C\t: %f meter\n", C);
-    float x1 = LUNA.height * tan(deg_to_rad(LUNA.alpha));
+    float height_above_water = LUNA.height - LUNA.draught;
+    float x1 = height_above_water * tan(deg_to_rad(LUNA.alpha));
     // printf("x1\t: %f meter\n", x1);
-    float c1 = sqrt(x1*x1 + LUNA.height*LUNA.height);
+    float c1 = sqrt(x1*x1 + height_above_water*height_above_water);
     // printf("c1\t: %f meter\n", c1);
     if(C < c1){
         dist = sin(deg_to_rad(LUNA.alpha)) * C;
-        depth = cos(deg_to_rad(LUNA.alpha))* C - LUNA.height;
+        depth = cos(deg_to_rad(LUNA.alpha))* C;
         // printf("1Distance\t: %f meter\n", dist);
         // printf("1Depth\t\t: %f meter\n", depth);
         return;
@@ -55,7 +68,7 @@ void X(float& dist, float& depth, float C){
     float x2 = sin(deg_to_rad(LUNA.beta)) * c2;
     // printf("x2\t: %f meter\n\n", x2);
     
-    depth = cos(deg_to_rad(LUNA.beta))* c2;
+    depth = height_above_water+ cos(deg_to_rad(LUNA.beta))* c2;
     // X = x1 + x2
     dist = x1 + x2;
     // printf("2Distance\t: %f meter\n", dist);

@@ -31,7 +31,7 @@ void SERVO_SETUP(){
 }
 
 
-const int fov = 90;
+const int fov = 60;
 int angle_open = 0;
 // prototypes function
 void sendDataToClients(String data);
@@ -51,6 +51,7 @@ void setup() {
   // SERVO
   SERVO_SETUP();
   angle_open = 90+(fov/2);
+
   servo1.write(angle_open);
   
   USE_SERIAL.begin(115200);
@@ -73,7 +74,7 @@ void setup() {
   USE_SERIAL.println("Connected to WiFi");
   // Print ESP32 IP address
   IPAddress ip = WiFi.localIP();
-  USE_SERIAL.print("IP Address: ");
+  USE_SERIAL.print("Address\t: ws://");
   USE_SERIAL.print(ip);
   USE_SERIAL.print(":");
   USE_SERIAL.println(WS_serverPort);
@@ -89,17 +90,18 @@ void loop() {
 
   // Yaopo yo carae ngekeki delay? ohh reti
   // forward 
-  for( int i = 0; i < 91; i++){
+  for( int i = 0; i < (fov+1); i++){
     webSocket.loop();
     float C = luna_update_data();
     C/=100.0;
     float dist;
     float depth;
     X(dist, depth, C);
-
+    // depth status
+    uint16_t d_status = depth_status(depth);
     String Data = String(i)+","+ \
     String(dist, FLOAT_PRECISION )+","+ \
-    String(depth, FLOAT_PRECISION)+","+ \
+    String(d_status);//+","+ \
     String(C, FLOAT_PRECISION);
 
 
@@ -108,17 +110,18 @@ void loop() {
     // sendDataToClients_CSV(i);
   }
   // backward
-  for( int i = 90; i >= 0; i--){
+  for( int i = fov; i >= 0; i--){
     webSocket.loop();
     float C = luna_update_data();
     C/=100.0;
     float dist;
     float depth;
     X(dist, depth, C);
-
+    // depth status
+    uint16_t d_status = depth_status(depth);
     String Data = String(i)+","+ \
     String(dist, FLOAT_PRECISION )+","+ \
-    String(depth, FLOAT_PRECISION)+","+ \
+    String(d_status);//+","+ \
     String(C, FLOAT_PRECISION);
 
     sendDataToClients_CSV_wdlay(Data);
