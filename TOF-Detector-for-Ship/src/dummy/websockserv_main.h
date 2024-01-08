@@ -21,8 +21,8 @@ void sendDataToClients_CSV(int angle);
 void sendDataToClients_CSV_wdlay(String data);
 
 // ssid and password for connection
-const char *w_ssid = "Informatics ITS 20";
-const char *w_password = "informatics";
+const char *w_ssid = "JHAGAS";
+const char *w_password = "12345678";
 
 
 
@@ -95,8 +95,8 @@ void sendDataToClients_CSV_wdlay( String data) {
 }
 
 void sendDataToClients_CSV(int angle){
-  int16_t dist = random(0, 600);
-  int16_t depth = random(0, 2);
+  float dist = (float)random(0, 451)/100.0;
+  int16_t depth = random(0, 3);
   String data = String(angle)+","+String(dist)+","+String(depth);
   sendDataToClients_CSV_wdlay(data);
 }
