@@ -27,11 +27,12 @@ const char *w_password = "informatics";
 
 
 WiFiMulti wifiConn;
-
+const int fov = 46;
+int angle_open = 0;
 
 void setup() {
   USE_SERIAL.begin(115200);
-  
+  angle_open = 90+(fov/2);
   USE_SERIAL.println();
   USE_SERIAL.println();
   USE_SERIAL.println();
@@ -64,11 +65,11 @@ void loop() {
 
   // Yaopo yo carae ngekeki delay? ohh reti
   // forward 
-  for( int i = 0; i < 91; i++){
+  for( int i = 0; i < (fov+1); i++){
     sendDataToClients_CSV(i);
   }
   // backward
-  for( int i = 90; i >= 0; i--){
+  for( int i = fov; i >= 0; i--){
     sendDataToClients_CSV(i);
   }
 }
