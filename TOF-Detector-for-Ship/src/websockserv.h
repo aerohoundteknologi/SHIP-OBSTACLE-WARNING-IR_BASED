@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebSocketsServer.h>
+
 #define USE_SERIAL Serial
 
 const uint16_t WS_serverPort = 2345;
@@ -11,14 +12,13 @@ WebSocketsServer webSocket = WebSocketsServer(WS_serverPort);
 
 // Prototyping
 void websocketSetup();
-
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length);
+
 
 void websocketSetup() {
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
 }
-
 
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {

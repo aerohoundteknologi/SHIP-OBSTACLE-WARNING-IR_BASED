@@ -1,5 +1,5 @@
-#ifndef TEDY_H
-#define TEDY_H
+#ifndef SENSOR_H
+#define SENSOR_H
 #include <Arduino.h>
 
 #define LUNA_SERIAL Serial2
@@ -11,12 +11,11 @@ struct Sensor{
     float beta;
 };
 
-
 Sensor LUNA = {
-    0.2001456,
-    0.06,
-    86.68,
-    48.66,
+    0.24,
+    0.07,
+    85.2,
+    48.54,
 };
 
 // Prototyping
@@ -46,33 +45,22 @@ float deg_to_rad(float deg){
 
 
 void X(float& dist, float& depth, float C){
-    // printf("======== COMPUTE ========\n");
-    // printf("input C\t: %f meter\n", C);
     float height_above_water = LUNA.height - LUNA.draught;
     float x1 = height_above_water * tan(deg_to_rad(LUNA.alpha));
-    // printf("x1\t: %f meter\n", x1);
     float c1 = sqrt(x1*x1 + height_above_water*height_above_water);
-    // printf("c1\t: %f meter\n", c1);
+
     if(C < c1){
         dist = sin(deg_to_rad(LUNA.alpha)) * C;
         depth = cos(deg_to_rad(LUNA.alpha))* C;
-        // printf("1Distance\t: %f meter\n", dist);
-        // printf("1Depth\t\t: %f meter\n", depth);
+
         return;
     }
-    // c2
+
     float c2 = C - c1;
-    // printf("c2\t: %f meter\n", c2);
-    
-    // x2
     float x2 = sin(deg_to_rad(LUNA.beta)) * c2;
-    // printf("x2\t: %f meter\n\n", x2);
-    
     depth = height_above_water+ cos(deg_to_rad(LUNA.beta))* c2;
-    // X = x1 + x2
     dist = x1 + x2;
-    // printf("2Distance\t: %f meter\n", dist);
-    // printf("2Depth\t\t: %f meter\n", depth);
+
 }
 
 int uart[9]; 
@@ -108,7 +96,6 @@ float luna_update_data(){
       }
     }
   }
-  // jika tidak ada data, maka dist = 0
   if(dist > 0){
     LUNA_DIST = dist;
     return dist;
