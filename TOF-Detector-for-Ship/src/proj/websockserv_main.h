@@ -99,8 +99,9 @@ void loop() {
   }
   // backward
   for( int i = fov; i >= 0; i--){
-    servo1.write(angle_open-i);
+    
     webSocket.loop();
+    servo1.write(angle_open-i);
     float C = luna_update_data();
     C/=100.0;
     float dist;
